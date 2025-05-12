@@ -18,6 +18,18 @@ public static class EmployeeMapping
         };
     }
 
+    public static Employe ToUpdateEntity(this UpdateEmployee employee)
+    {
+        return new()
+        {
+            DepartmentId = employee.DepartmentId,
+            FirstName = employee.FirstName,
+            LastName = employee.LastName,
+            Email = employee.Email,
+            Phone = employee.Phone
+        };
+    }
+
     public static EmployeeDto ToDto(this Employe employee, string Name)
     {
         return new(
