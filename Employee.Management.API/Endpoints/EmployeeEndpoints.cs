@@ -36,6 +36,9 @@ public static class EmployeeEndpoints
             Employe employee = newEmployee.ToEntity();
             Department? department = await dbContext.Departments.FindAsync(employee.DepartmentId);
 
+            // If the users department is not found
+            if (department.Name is null) return Results.NotFound();
+
             await dbContext.AddAsync(employee);
             await dbContext.SaveChangesAsync();
 
@@ -78,6 +81,15 @@ public static class EmployeeEndpoints
         });
 
 
+
+        // DELETE - delete employee by ID
+        group.MapDelete("/{id}", async (int id, EmployeeManagementContext dbContext) =>
+        {
+            await dbContext.Employees.Where(x => x.Id == id).ExecuteDeleteAsync();
+            await dbContext.SaveChangesAsync();
+
+            return Results.NoContent();
+        });
 
         return group;
     }
