@@ -7,5 +7,5 @@ public record class CreateEmployee(
     [Required][StringLength(20)] string FirstName,
     [Required][StringLength(20)] string LastName,
     [Required][StringLength(30)] string Email,
-    [Required][Range(9, 10)] int Phone
+    [Required] int Phone
 );
