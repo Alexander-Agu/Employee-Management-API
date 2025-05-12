@@ -1,0 +1,50 @@
+using System;
+using System.Text.RegularExpressions;
+using Employee.Management.API.Data;
+using Employee.Management.API.Dtos;
+using Employee.Management.API.Entities;
+using Employee.Management.API.Mapping;
+using Microsoft.EntityFrameworkCore;
+
+namespace Employee.Management.API.Endpoints;
+
+public static class EmployeeEndpoints
+{
+    public static RouteGroupBuilder MapEmployeeEnpoints(this WebApplication app)
+    {
+        var group = app.MapGroup("employees").WithParameterValidation();
+        string GetEmployeeEndpoint = "GetEmployee";
+
+        // GET - gets all employees
+        group.MapGet("/", async (EmployeeManagementContext dbContext) => await dbContext.Employees.ToListAsync());
+
+
+        // GET - gets employees by ID
+        group.MapGet("/{id}", async (int id, EmployeeManagementContext dbContext) =>
+        {
+
+            Employe? employee = await dbContext.Employees.FindAsync(id);
+
+            return employee is null ? Results.NotFound() : Results.Ok(employee.ToDto(dbContext.Departments.Find(employee.DepartmentId).Name));
+        })
+        .WithName(GetEmployeeEndpoint);
+
+
+        // POST - creates an imployee
+        group.MapPost("/", async (CreateEmployee newEmployee, EmployeeManagementContext dbContext) =>
+        {
+            Employe employee = newEmployee.ToEntity();
+            Department? department = await dbContext.Departments.FindAsync(employee.DepartmentId);
+
+            await dbContext.AddAsync(employee);
+            await dbContext.SaveChangesAsync();
+
+            return Results.CreatedAtRoute(GetEmployeeEndpoint, new { id = employee.Id }, employee.ToDto(department.Name));
+        })
+        .WithParameterValidation();
+
+
+
+        return group;
+    }
+}
