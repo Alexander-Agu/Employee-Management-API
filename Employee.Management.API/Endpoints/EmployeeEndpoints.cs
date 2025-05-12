@@ -44,6 +44,40 @@ public static class EmployeeEndpoints
         .WithParameterValidation();
 
 
+        // PUT - updates employee information by ID
+        group.MapPut("/{id}", async (int id, UpdateEmployee updateEmployee, EmployeeManagementContext dbContext) =>
+        {
+            Employe? employee = await dbContext.Employees.FindAsync(id);
+
+            if (employee is null) return Results.NotFound();
+
+            if (updateEmployee.FirstName != "")
+            {
+                employee.FirstName = updateEmployee.FirstName;
+            }
+            if (updateEmployee.LastName != "")
+            {
+                employee.LastName = updateEmployee.LastName;
+            }
+            if (updateEmployee.Email != "")
+            {
+                employee.Email = updateEmployee.Email;
+            }
+            if (updateEmployee.Phone != employee.Phone)
+            {
+                employee.Phone = updateEmployee.Phone;
+            }
+            if (updateEmployee.DepartmentId != employee.DepartmentId)
+            {
+                employee.DepartmentId = updateEmployee.DepartmentId;
+            }
+
+            await dbContext.SaveChangesAsync();
+
+            return Results.CreatedAtRoute(GetEmployeeEndpoint, new { id = employee.Id }, employee.ToDto(dbContext.Departments.Find(employee.DepartmentId).Name));
+        });
+
+
 
         return group;
     }
