@@ -6,11 +6,12 @@ namespace Employee.Management.API.Mapping;
 
 public static class EmployeeMapping
 {
-    public static Employe ToEntity(this CreateEmployee employee)
+    public static Employe ToEntity(this CreateEmployee employee, Department Department)
     {
         return new()
         {
             DepartmentId = employee.DepartmentId,
+            Department = Department,
             FirstName = employee.FirstName,
             LastName = employee.LastName,
             Email = employee.Email,
@@ -18,11 +19,12 @@ public static class EmployeeMapping
         };
     }
 
-    public static Employe ToUpdateEntity(this UpdateEmployee employee)
+    public static Employe ToUpdateEntity(this UpdateEmployee employee, Department Department)
     {
         return new()
         {
             DepartmentId = employee.DepartmentId,
+            Department = Department,
             FirstName = employee.FirstName,
             LastName = employee.LastName,
             Email = employee.Email,

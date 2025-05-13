@@ -42,11 +42,14 @@ public static class EmployeeEndpoints
         // POST - creates an imployee
         group.MapPost("/", async (CreateEmployee newEmployee, EmployeeManagementContext dbContext) =>
         {
-            Employe employee = newEmployee.ToEntity();
-            Department? department = await dbContext.Departments.FindAsync(employee.DepartmentId);
-
+            Department? department = await dbContext.Departments.FindAsync(newEmployee.DepartmentId);
             // If the users department is not found
             if (department.Name is null) return Results.NotFound();
+
+            Employe employee = newEmployee.ToEntity(department);
+
+
+
 
             await dbContext.AddAsync(employee);
             await dbContext.SaveChangesAsync();

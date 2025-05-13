@@ -2,6 +2,7 @@
 using Employee.Management.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Employee.Management.API.Data.Migrations
 {
     [DbContext(typeof(EmployeeManagementContext))]
-    partial class EmployeeManagementContextModelSnapshot : ModelSnapshot
+    [Migration("20250513141330_EmployeeManyToMany")]
+    partial class EmployeeManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.4");
@@ -87,17 +90,12 @@ namespace Employee.Management.API.Data.Migrations
             modelBuilder.Entity("Employee.Management.API.Entities.Employe", b =>
                 {
                     b.HasOne("Employee.Management.API.Entities.Department", "Department")
-                        .WithMany("Employes")
+                        .WithMany()
                         .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("Employee.Management.API.Entities.Department", b =>
-                {
-                    b.Navigation("Employes");
                 });
 #pragma warning restore 612, 618
         }
