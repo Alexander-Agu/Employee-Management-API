@@ -19,6 +19,15 @@ public static class EmployeeEndpoints
         group.MapGet("/", async (EmployeeManagementContext dbContext) => await dbContext.Employees.ToListAsync());
 
 
+        // GET - gets employees by DepartmentId
+        group.MapGet("/department/{departId}", async (int departId, EmployeeManagementContext dbContext) =>
+        {
+            List<Employe> employees = await dbContext.Employees.Where(x => x.DepartmentId == departId).ToListAsync();
+
+            return employees is null || employees.Count == 0 ? Results.NotFound() : Results.Ok(employees);
+        });
+
+
         // GET - gets employees by ID
         group.MapGet("/{id}", async (int id, EmployeeManagementContext dbContext) =>
         {
